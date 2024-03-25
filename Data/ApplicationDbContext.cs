@@ -13,5 +13,7 @@ namespace MovieLibrary.Data
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<StreamingService> StreamingServices { get; set; }
+        public DbSet<ApplicationUser> Users {  get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieLibrary.Models
@@ -7,9 +8,11 @@ namespace MovieLibrary.Models
     {
         public Guid Id { get; set; }
         [StringLength(50)]
-        public string Reviewer { get; set; }
+        [DisplayName("Reviewer")]
+        public string Source { get; set; }
         [StringLength(10)]
-        public string Score { get; set; }
+        [DisplayName("Score")]
+        public string Value { get; set; }
         [ForeignKey("Movie")]
         public Guid Fk_MovieId{ get; set; }
         public virtual Movie Movie { get; set; }
