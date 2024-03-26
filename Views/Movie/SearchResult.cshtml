@@ -1,0 +1,116 @@
+﻿@model MovieViewModel;
+
+@{
+    ViewData["Title"] = "SearchResult";
+}
+
+
+<div>
+    <form asp-action="SaveMovie" method="post">
+        @* Validation check *@
+        <input type="hidden" asp-for="Movie.Poster" />
+        <img src="@Model.Movie.Poster" />
+        <dl class="row">
+            <dt class="col-sm-2">
+                Title
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Title" />
+                @Model.Movie.Title
+            </dd>
+            <dt class="col-sm-2">
+                Genre
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Genre" />
+                @Model.Movie.Genre
+            </dd>
+            <dt class="col-sm-2">
+                Runtime
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Runtime" />
+                @Model.Movie.Runtime
+            </dd>
+            <dt class="col-sm-2">
+                Released
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Year" />
+                @Model.Movie.Year
+            </dd>
+            <dt class="col-sm-2">
+                Plot
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Plot" />
+                @Model.Movie.Plot
+            </dd>
+            <dt class="col-sm-2">
+                Director
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Director" />
+                @Model.Movie.Director
+            </dd>
+            <dt class="col-sm-2">
+                Writer
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Writer" />
+                @Model.Movie.Writer
+            </dd>
+            <dt class="col-sm-2">
+                Actors
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Actors" />
+                @Model.Movie.Actors
+            </dd>
+            <dt class="col-sm-2">
+                Awards
+            </dt>
+            <dd class="col-sm-10">
+                <input type="hidden" asp-for="Movie.Awards" />
+                @Model.Movie.Awards
+            </dd>
+            <dt class="col-sm-2">
+                Ratings
+            </dt>
+            <dd class="col-sm-10">
+                <ul>
+                    @for (int i = 0; i < Model.Ratings.Count; i++)
+                    {
+                        <li>
+                            <input type="hidden" asp-for="Ratings[i].Source"/>
+                            <input type="hidden" asp-for="Ratings[i].Value"/>
+                            @Model.Ratings[i].Source: @Model.Ratings[i].Value
+                        </li>
+                    }
+                </ul>
+            </dd>
+            <h2>Streaming options</h2>
+            <dt class="col-sm-2">
+                Streaming Services
+            </dt>
+            <dd class="col-sm-10">
+                <ul>
+                    @for (int i = 0; i < Model.StreamingServices.Count; i++)
+                    {
+                        <li>
+                            <input type="hidden" asp-for="StreamingServices[i].ServiceName" />
+                            <input type="hidden" asp-for="StreamingServices[i].Type" />
+                            <input type="hidden" asp-for="StreamingServices[i].Link" />
+                            <input type="hidden" asp-for="StreamingServices[i].Price" />
+                            @Model.StreamingServices[i].ServiceName.ToUpper(), @Model.StreamingServices[i].Type, @Model.StreamingServices[i].Link, @Model.StreamingServices[i].Price
+                        </li>
+                    }
+                </ul>
+            </dd>
+        </dl>
+            <div class="form-group">
+                <input type="submit" value="Add to list" class="btn btn-primary"/>
+            </div>
+    </form>
+    <a asp-action="Index">Back to menu</a>
+</div>

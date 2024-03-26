@@ -1,5 +1,6 @@
 ﻿namespace MovieLibrary.APIComponents
 {
+    // Model for deserializing API response
     public class StreamingAPIResponse
     {
         public List<Result> result {  get; set; }
@@ -10,7 +11,7 @@
     }
     public class StreamingInfo
     {
-        public List<StreamOption> us { get; set; }
+        public List<StreamOption> se { get; set; }
     }
     public class StreamOption
     {
