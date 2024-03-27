@@ -6,7 +6,7 @@ namespace MovieLibrary.APIComponents
 {
     public class StreamingServices
     {
-        public static List<StreamingService> FromJson(string jsonString)
+        public static List<StreamingService> DeserializeJSON(string jsonString)
         {
             StreamingAPIResponse response = JsonConvert.DeserializeObject<StreamingAPIResponse>(jsonString);
 
@@ -16,25 +16,31 @@ namespace MovieLibrary.APIComponents
 
                 List<StreamOption> streamOptions = firstResult.streamingInfo.se;
 
-                var streamingServices = new List<StreamingService>();
-
-                foreach (var service in streamOptions)
+                if (streamOptions != null)
                 {
-                    var streamingService = new StreamingService
-                    {
-                        Id = Guid.NewGuid(),
-                        ServiceName = service.service,
-                        Type = service.streamingType,
-                        Link = service.link,
-                    };
-                    if (service.price != null)
-                    {
-                        streamingService.Price = Convert.ToString(service.price.formatted);
-                    }
-                    streamingServices.Add(streamingService);
-                }
+                    var streamingServices = new List<StreamingService>();
 
-                return streamingServices;
+                    foreach (var service in streamOptions)
+                    {
+                        var streamingService = new StreamingService
+                        {
+                            Id = Guid.NewGuid(),
+                            ServiceName = service.service,
+                            Type = service.streamingType,
+                            Link = service.link,
+                        };
+                        if (service.price != null)
+                        {
+                            streamingService.Price = Convert.ToString(service.price.formatted);
+                        }
+                        streamingServices.Add(streamingService);
+                    }
+                    return streamingServices;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {

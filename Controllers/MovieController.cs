@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieLibrary.API;
 using MovieLibrary.APIComponents;
 using MovieLibrary.Data;
@@ -18,9 +19,35 @@ namespace MovieLibrary.Controllers
             _db = db;
             _user = user;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var user = await _user.GetUserAsync(User);
+            if (user != null)
+            {
+                IQueryable<Movie> movies = _db.Movies.Where(m => m.Fk_UserId == user.Id).Include(m => m.Ratings).Include(m => m.StreamingServices);
+                List<Movie> movieList = await movies.ToListAsync();
+                return View(movieList);
+            }
+            else 
+            { 
+                return View(); 
+            }
+        }
+
+        public IActionResult Details(Guid MovieId)
+        {
+            var movie = _db.Movies.Where(m => m.Id == MovieId).Include(m => m.Ratings).Include(m => m.StreamingServices).FirstOrDefault();
+            return View(movie);
+        }
+
+        public async Task<IActionResult> EdenAI()
+        {
+            string title = "batman begins";
+            var EdenResponse = new EdenAI();
+            var EdenResult = await EdenResponse.Get(title);
+            var response = JsonConvert.DeserializeObject<dynamic>(EdenResult);
+            string imgUrl = response[0].items[0].image_resource_url;
+            return View((object)imgUrl);
         }
 
         public IActionResult Search()
@@ -61,7 +88,7 @@ namespace MovieLibrary.Controllers
             if (streamingResult != null ) 
             {
                 // Create a StreamingService object from the JSON response
-                var streamingService = StreamingServices.FromJson(streamingResult);
+                var streamingService = StreamingServices.DeserializeJSON(streamingResult);
 
                 List<StreamingService> streamingData = streamingService;
                 var viewModel = new MovieViewModel()
@@ -89,14 +116,17 @@ namespace MovieLibrary.Controllers
                 rating.Fk_MovieId = viewModel.Movie.Id;
                 _db.Ratings.Add(rating);
             }
-            foreach (var streamingService in viewModel.StreamingServices)
+            if (viewModel.StreamingServices != null)
             {
-                streamingService.Fk_MovieId = viewModel.Movie.Id;
-                _db.StreamingServices.Add(streamingService);
+                foreach (var streamingService in viewModel.StreamingServices)
+                {
+                    streamingService.Fk_MovieId = viewModel.Movie.Id;
+                    _db.StreamingServices.Add(streamingService);
+                }
             }
+
             _db.SaveChanges();
 
-            //return View(viewModel);
             return RedirectToAction("Index");
         }
     }
