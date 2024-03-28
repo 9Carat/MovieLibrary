@@ -8,6 +8,7 @@ namespace MovieLibrary.APIComponents
     {
         public static List<StreamingService> DeserializeJSON(string jsonString)
         {
+            // Deserialize response as custom response object
             StreamingAPIResponse response = JsonConvert.DeserializeObject<StreamingAPIResponse>(jsonString);
 
             if (response != null)
@@ -22,6 +23,7 @@ namespace MovieLibrary.APIComponents
 
                     foreach (var service in streamOptions)
                     {
+                        // Create StreamingService object based on custom respone object
                         var streamingService = new StreamingService
                         {
                             Id = Guid.NewGuid(),

@@ -9,6 +9,7 @@
 <div>
     <hr />
     <img src="@Model.Poster" />
+    <a asp-action="ImageAI" asp-route-movieId="@Model.Id">Generate AI Image</a>
     <dl class="row">
         <dt class="col-sm-2">
             Title

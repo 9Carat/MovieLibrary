@@ -40,14 +40,42 @@ namespace MovieLibrary.Controllers
             return View(movie);
         }
 
-        public async Task<IActionResult> EdenAI()
+        public async Task<IActionResult> ImageAI(Guid movieId)
         {
-            string title = "batman begins";
-            var EdenResponse = new EdenAI();
-            var EdenResult = await EdenResponse.Get(title);
-            var response = JsonConvert.DeserializeObject<dynamic>(EdenResult);
-            string imgUrl = response[0].items[0].image_resource_url;
-            return View((object)imgUrl);
+            var movie = _db.Movies.Where(m => m.Id == movieId).Include(m => m.Ratings).Include(m => m.StreamingServices).FirstOrDefault();
+
+            if (movie != null)
+            {
+                string title = movie.Title;
+                var EdenResponse = new EdenAI();
+                var EdenResult = await EdenResponse.Get(title);
+                var response = JsonConvert.DeserializeObject<dynamic>(EdenResult);
+                string imgUrl = response[0].items[0].image_resource_url;
+
+                // Download image
+                byte[] imageBytes;
+                using (var httpClient = new HttpClient())
+                {
+                    imageBytes = await httpClient.GetByteArrayAsync(imgUrl);
+                }
+
+                // Store image locally
+                string fileName = $"{movieId.ToString() + DateTime.Now.ToString("yymmssfff")}.jpg";
+                string imagePath = Path.Combine("wwwroot", "images", "posters", fileName);
+                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await fileStream.WriteAsync(imageBytes);
+                }
+
+                movie.Poster = $"/images/posters/{fileName}";
+                _db.Movies.Update(movie);
+                _db.SaveChanges();
+                return View("Details", movie);
+            }
+            else 
+            { 
+                return View("Error"); 
+            }
         }
 
         public IActionResult Search()
@@ -61,11 +89,11 @@ namespace MovieLibrary.Controllers
 
             //Call the OMDb API for general information
             var OMDbResponse = new OMDbAPI();
-            var OMDbResult = await OMDbResponse.Get(title);
+            var (OMDbResult, isSuccessful) = await OMDbResponse.Get(title);
             var movieData = JsonConvert.DeserializeObject<Movie>(OMDbResult);
             List<Rating> ratingData;
 
-            if (movieData != null ) 
+            if (isSuccessful) 
             {
                 ratingData = movieData.Ratings.Select(rating =>
                 {
@@ -79,9 +107,10 @@ namespace MovieLibrary.Controllers
             }
             else
             {
-                return RedirectToAction("Index");
+                return View("Error");
             }
             
+            // Call Streaming Availability API
             var streamingResponse = new StreamingAPI();
             var streamingResult = await streamingResponse.Get(title);
 

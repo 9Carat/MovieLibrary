@@ -15,7 +15,7 @@ namespace MovieLibrary.API
                     { "accept", "application/json" },
                     { "authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNDRlYTg1OWItOWU0MS00MjExLWExNTctZTRkZjk0Y2JlOTIzIiwidHlwZSI6ImFwaV90b2tlbiJ9.dGqqKRL5scZwaTW1JUEvqnOABUWF6FtUASlFieFmj4o" },
                 },
-                Content = new StringContent($"{{\"response_as_dict\":false,\"attributes_as_list\":false,\"show_original_response\":false,\"resolution\":\"1024x1024\",\"num_images\":1,\"providers\":\"replicate\",\"text\":\"{title} movie poster\",\"fallback_providers\":\"amazon\"}}")
+                Content = new StringContent($"{{\"response_as_dict\":false,\"attributes_as_list\":false,\"show_original_response\":false,\"resolution\":\"512x512\",\"num_images\":1,\"providers\":\"replicate\",\"text\":\"{title} movie poster\"}}")
                 {
                     Headers =
                     {
