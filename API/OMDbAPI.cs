@@ -18,10 +18,7 @@ namespace MovieLibrary.API
                     bool isSuccessful = responseObject["Response"].ToString().Equals("True");
                     return (responseData, isSuccessful);
                 }
-                else
-                {
-                    return (null, false);
-                }
+                else return (null, false);
             }
         }
     }

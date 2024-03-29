@@ -39,15 +39,9 @@ namespace MovieLibrary.APIComponents
                     }
                     return streamingServices;
                 }
-                else
-                {
-                    return null;
-                }
+                else return null;
             }
-            else
-            {
-                return null;
-            }
+            else return null;
         }
     }
 }

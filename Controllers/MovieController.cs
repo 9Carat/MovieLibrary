@@ -28,10 +28,7 @@ namespace MovieLibrary.Controllers
                 List<Movie> movieList = await movies.ToListAsync();
                 return View(movieList);
             }
-            else 
-            { 
-                return View(); 
-            }
+            else return View(); 
         }
 
         public IActionResult Details(Guid MovieId)
@@ -72,10 +69,7 @@ namespace MovieLibrary.Controllers
                 _db.SaveChanges();
                 return View("Details", movie);
             }
-            else 
-            { 
-                return View("Error"); 
-            }
+            else return View("Error"); 
         }
 
         public IActionResult Search()
@@ -105,10 +99,7 @@ namespace MovieLibrary.Controllers
                     };
                 }).ToList();
             }
-            else
-            {
-                return View("Error");
-            }
+            else return View("Error");
             
             // Call Streaming Availability API
             var streamingResponse = new StreamingAPI();
@@ -129,10 +120,7 @@ namespace MovieLibrary.Controllers
 
                 return View(viewModel);
             }
-            else 
-            { 
-                return RedirectToAction("Index"); 
-            }
+            else return RedirectToAction("Index"); 
         }
         public async Task<IActionResult> SaveMovie(MovieViewModel viewModel)
         {
@@ -155,7 +143,13 @@ namespace MovieLibrary.Controllers
             }
 
             _db.SaveChanges();
-
+            return RedirectToAction("Index");
+        }
+        public IActionResult Remove(Guid movieId) 
+        { 
+            var movie = _db.Movies.Where(m => m.Id == movieId).Include(m => m.Ratings).Include(m => m.StreamingServices).FirstOrDefault();
+            _db.Movies.Remove(movie);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }

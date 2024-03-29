@@ -10,6 +10,7 @@
     <hr />
     <img src="@Model.Poster" />
     <a asp-action="ImageAI" asp-route-movieId="@Model.Id">Generate AI Image</a>
+    <a asp-action="Remove" asp-route-movieId="@Model.Id">Remove from list</a>
     <dl class="row">
         <dt class="col-sm-2">
             Title
