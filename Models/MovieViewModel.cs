@@ -6,7 +6,8 @@ namespace MovieLibrary.Models
     public class MovieViewModel
     {
         public Movie Movie { get; set; }
+        public IQueryable<Movie> Movies { get; set; }
         public List<Rating> Ratings { get; set; }
-        public List<StreamingService> StreamingServices { get; set; }
+        public List<StreamingService>? StreamingServices { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
+using MovieLibrary.Services;
+using MovieLibrary.Services.IServices;
 
 namespace MovieLibrary
 {
@@ -19,6 +21,9 @@ namespace MovieLibrary
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+            builder.Services.AddAutoMapper(typeof(MappingConfig));
+            builder.Services.AddHttpClient<IMovieService, MovieService>();
+            builder.Services.AddScoped<IMovieService, MovieService>();
 
             var app = builder.Build();
 

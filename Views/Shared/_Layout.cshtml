@@ -28,6 +28,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <form id="f_search" method="get" asp-controller="Movie" asp-action="SearchResult">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input id="ipt_search" type="search" class="form-control searchBar" name="title" placeholder="Search for movies" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default">
+                                                Search
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
