@@ -2,6 +2,7 @@
 {
     public class StreamingServiceCreateDTO
     {
+        public Guid Id { get; set; }
         public string ServiceName { get; set; }
         public string Type { get; set; }
         public string Link { get; set; }

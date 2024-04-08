@@ -28,11 +28,20 @@ namespace MovieLibrary.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _user.GetUserAsync(User);
-            var response = await _movieService.GetByUserIdAsync<ApiResponse>(user.Id);
-            if (user != null && response.IsSuccess)
+            
+            if (user != null)
             {
-                List<Movie> movieList = JsonConvert.DeserializeObject<List<Movie>>(Convert.ToString(response.Result));
-                return View(movieList);
+                var response = await _movieService.GetByUserIdAsync<ApiResponse>(user.Id);
+                if (response.IsSuccess)
+                {
+                    List<Movie> movieList = JsonConvert.DeserializeObject<List<Movie>>(Convert.ToString(response.Result));
+                    return View(movieList);
+                }
+                else 
+                { 
+                    return View();
+                }
+
             }
             else return View(); 
         }
@@ -142,6 +151,7 @@ namespace MovieLibrary.Controllers
             var ratings = _mapper.Map<List<RatingCreateDTO>>(viewModel.Ratings);
             foreach (var rating in ratings)
             {
+                rating.Id = Guid.NewGuid();
                 rating.Fk_MovieId = movieDto.Id;
             }
             movieDto.Ratings = ratings;
@@ -152,6 +162,7 @@ namespace MovieLibrary.Controllers
 
                 foreach (var streamingService in streamingServices)
                 {
+                    streamingService.Id = Guid.NewGuid();
                     streamingService.Fk_MovieId = movieDto.Id;
                 }
 

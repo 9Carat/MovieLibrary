@@ -1,7 +1,10 @@
 ﻿@model MovieViewModel;
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> userManager
 
 @{
     ViewData["Title"] = "SearchResult";
+    var user = await userManager.GetUserAsync(User);
 }
 
 
@@ -115,9 +118,18 @@
                 </ul>
             </dd>
         </dl>
+        @if (user != null)
+        {
             <div class="form-group">
-                <input type="submit" value="Add to list" class="btn btn-primary"/>
+                <input type="submit" value="Add to list" class="btn btn-primary" />
             </div>
+        }
+        else
+        {
+        <div class="form-group">
+            <button type="button" disabled class="btn btn-primary">Login to add movie</button>
+        </div>
+        }
     </form>
     <a asp-action="Index">Back to menu</a>
 </div>

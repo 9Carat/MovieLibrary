@@ -14,15 +14,19 @@
 @if (user != null)
 {
     <div class="row">
-        @foreach (var movie in Model)
+        @if (Model != null)
         {
-            <div class="card mx-2 my-1" style="width: 15rem">
-                <h2>@movie.Title</h2>
-                <img src="@movie.Poster" />
-                <div class="footer text-center text-body-secondary">
-                    <a asp-action="Details" asp-route-movieId="@movie.Id" data-bs-toggle="tooltip" data-bs-title="Show details"><i class="bi bi-arrow-right" style="font-size: 20px; color: cornflowerblue; padding-right:10px;">Details</i></a>
+            foreach (var movie in Model)
+            {
+                <div class="card mx-2 my-1" style="width: 15rem">
+                    <h2>@movie.Title</h2>
+                    <img src="@movie.Poster" />
+                    <div class="footer text-center text-body-secondary">
+                        <a asp-action="Details" asp-route-movieId="@movie.Id" data-bs-toggle="tooltip" data-bs-title="Show details"><i class="bi bi-arrow-right" style="font-size: 20px; color: cornflowerblue; padding-right:10px;">Details</i></a>
+                    </div>
                 </div>
-            </div>
+            }
         }
+
     </div>
 }
