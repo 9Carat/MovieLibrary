@@ -7,26 +7,74 @@
     var user = await userManager.GetUserAsync(User);
 }
 
-<h1>View</h1>
-
-<a asp-action="Search">Search</a>
+@* <a asp-action="Search">Search</a> *@
 
 @if (user != null)
 {
-    <div class="row">
-        @if (Model != null)
-        {
-            foreach (var movie in Model)
-            {
-                <div class="card mx-2 my-1" style="width: 15rem">
-                    <h2>@movie.Title</h2>
-                    <img src="@movie.Poster" />
-                    <div class="footer text-center text-body-secondary">
-                        <a asp-action="Details" asp-route-movieId="@movie.Id" data-bs-toggle="tooltip" data-bs-title="Show details"><i class="bi bi-arrow-right" style="font-size: 20px; color: cornflowerblue; padding-right:10px;">Details</i></a>
-                    </div>
-                </div>
-            }
-        }
-
+    <button id="toggleGrid"><i class="bi bi-grid-3x3"></i></button>
+    <div class="wrapper style2">
+        <div class="inner">
+            <div class="row card-container">
+                @if (Model != null)
+                {
+                    foreach (var movie in Model)
+                    {
+                        <div class="card-parent col-md-1">
+                            <div class="card mb-3 movie-card">
+                                <a asp-action="Details" asp-route-movieId="@movie.Id" class="movie-link">
+                                    <img src="@movie.Poster" class="card-img-top movie-poster" alt="@movie.Title">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title">@movie.Title</h5>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </div>
+    <script>
+        document.getElementById("toggleGrid").addEventListener("click", function() {
+            var cardParents = document.querySelectorAll(".card-parent");
+            cardParents.forEach(function(cardParent) {
+                cardParent.classList.toggle("col-md-1");
+                cardParent.classList.toggle("col-md-2");
+            });
+        });
+    </script>
 }
+
+
+
+
+@* <div class="col-md-3">
+    <div class="card mb-4 shadow-sm">
+        <a asp-action="Details" asp-route-movieId="@movie.Id">
+            <img src="@movie.Poster" class="card-img-top" alt="@movie.Title">
+        </a>
+        <div class="card-body">
+            <h5 class="card-title">@movie.Title</h5>
+        </div>
+    </div>
+</div> *@
+
+
+
+
+
+
+
+
+
+
+@*                     foreach (var movie in Model)
+                    {
+<div class="card mx-2 my-1" style="width: 15rem">
+    <h2>@movie.Title</h2>
+    <img src="@movie.Poster" />
+    <div class="footer text-center text-body-secondary">
+        <a asp-action="Details" asp-route-movieId="@movie.Id" data-bs-toggle="tooltip" data-bs-title="Show details"><i class="bi bi-arrow-right" style="font-size: 20px; color: cornflowerblue; padding-right:10px;">Details</i></a>
+    </div>
+</div> 
+                    }*@

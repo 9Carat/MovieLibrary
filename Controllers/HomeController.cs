@@ -18,9 +18,5 @@ namespace MovieLibrary.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
     }
 }

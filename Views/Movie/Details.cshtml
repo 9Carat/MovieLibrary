@@ -9,8 +9,10 @@
 <div>
     <hr />
     <img src="@Model.Poster" />
-    <a asp-action="ImageAI" asp-route-movieId="@Model.Id">Generate AI Image</a>
-    <a asp-action="Remove" asp-route-movieId="@Model.Id">Remove from list</a>
+    <div>
+        <input type="button" value="Remove" onclick="location.href='@Url.Action("Remove", "Movie")?movieId=@Model.Id'" />
+        <input type="button" value="Generate Image" onclick="location.href='@Url.Action("ImageAI", "Movie")?movieId=@Model.Id'" />
+    </div>
     <dl class="row">
         <dt class="col-sm-2">
             Title
