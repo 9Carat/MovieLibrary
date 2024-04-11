@@ -55,7 +55,7 @@ section, summary, time, mark, audio, video {
     vertical-align: baseline;
 }
 
-h1, h5, p, .display-4 {
+h1, h5, p, .display-4, dd, dt {
     color: lightgray;
 }
 
@@ -151,19 +151,6 @@ input, select, textarea {
 
 /* Movie cards*/
 
-/*.card-container {
-    display: flex;
-    margin-top: 50px;
-}
-
-.card {
-    position: relative;
-    display: block;
-    flex: 1 1 0px;
-    transition: transform 500ms;
-}*/
-
-
 .card-container {
     display: flex;
     flex-wrap: wrap;
@@ -172,31 +159,30 @@ input, select, textarea {
     max-width: 100%;
 }
 
-.card {
+.card-parent {
     flex: 0 0 auto;
     margin: 5px;
     transition: transform 500ms;
     max-width: 250px;
     min-width: 175px;
-    border-radius: 15px;
     text-align: center;
-    background-color: #3c0166;
     border-radius: 25px;
+    box-sizing: border-box;
 }
 
-.card-container:focus-within .card,
-.card-container:hover .card {
+.card-container:focus-within .card-parent,
+.card-container:hover .card-parent {
     transform: translateX(-5%);
 }
 
 
-.card:focus ~ .card,
-.card:hover ~ .card {
+.card:focus ~ .card-parent,
+.card:hover ~ .card-parent {
     transform: translateX(25%);
 }
 
-.card-container .card:focus,
-.card-container .card:hover {
+.card-container .card-parent:focus,
+.card-container .card-parent:hover {
     transform: scale(1.25);
     z-index: 1;
 }
@@ -208,11 +194,13 @@ input, select, textarea {
 }
 
 .card-parent {
-    padding: 50px;
+    flex: 0 0 auto;
+    margin: 1vw;
+    box-sizing: border-box;
 }
 
 .card-body {
-    padding: 10px;
+    padding: 5px;
 }
 
 .card-title {
@@ -227,6 +215,79 @@ input, select, textarea {
     margin: 0 auto;
 }
 
+/* Details */
+
+.details-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.details-info {
+    padding-top: 5%;
+}
+
+.details-info dt, .details-info dd {
+    padding-left: 15vw;
+}
+
+.details-info h2 {
+    padding-top: 2vw;
+    text-align: center;
+}
+
+.details-img {
+    border-radius: 25px;
+}
+
+
+.detail-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detail-buttons input {
+    margin: 1vw;
+}
+
+.rating-img {
+    width: 50px;
+    min-width: 15%;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.rating-score {
+    margin-left: 15px;
+}
+
+.rating-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.rating-list li {
+    margin-right: 25px;
+}
+
+.stream-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.stream-list li {
+    min-width: 5%;
+}
+
+.stream-img {
+    width: 25%;
+    max-height: 250px
+}
 
 
 /* Basic */
@@ -349,7 +410,7 @@ blockquote {
 }
 
 p, ul, ol, dl, table {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 .date {
@@ -597,7 +658,7 @@ p, ul, ol, dl, table {
 }
 
     .row > * {
-        padding: 0 0 0 75px;
+        padding: 0 0 0 0px;
     }
 
     .row.gtr-uniform {

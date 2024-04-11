@@ -19,14 +19,12 @@
                 {
                     foreach (var movie in Model)
                     {
-                        <div class="card-parent col-md-1">
-                            <div class="card mb-3 movie-card">
-                                <a asp-action="Details" asp-route-movieId="@movie.Id" class="movie-link">
-                                    <img src="@movie.Poster" class="card-img-top movie-poster" alt="@movie.Title">
-                                </a>
-                                <div class="card-body">
-                                    <h5 class="card-title">@movie.Title</h5>
-                                </div>
+                        <div class="card-parent mb-3 col-md-2">
+                            <a asp-action="Details" asp-route-movieId="@movie.Id" class="movie-link">
+                                <img src="@movie.Poster" class="card-img-top movie-poster" alt="@movie.Title">
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">@movie.Title</h5>
                             </div>
                         </div>
                     }
