@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using MovieLibrary.Data;
 using MovieLibrary.Services;
 using MovieLibrary.Services.IServices;
+using WovieLibrary.Services;
 
 namespace MovieLibrary
 {
@@ -24,6 +26,9 @@ namespace MovieLibrary
             builder.Services.AddAutoMapper(typeof(MappingConfig));
             builder.Services.AddHttpClient<IMovieService, MovieService>();
             builder.Services.AddScoped<IMovieService, MovieService>();
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
             var app = builder.Build();
 

@@ -2,16 +2,23 @@
 
 @{
     ViewData["Title"] = "Details";
+
+    string CapitalizeFirstLetter(string str)
+    {
+        if (str == null)
+            return null;
+
+        if (str.Length > 1)
+            return char.ToUpper(str[0]) + str.Substring(1);
+
+        return str.ToUpper();
+    }
 }
 
-<h1>Details</h1>
-
-<div>
+<div class="details-main">
     <hr />
-    <img src="@Model.Poster" />
-    <a asp-action="ImageAI" asp-route-movieId="@Model.Id">Generate AI Image</a>
-    <a asp-action="Remove" asp-route-movieId="@Model.Id">Remove from list</a>
-    <dl class="row">
+    <img src="@Model.Poster" class="details-img" />
+    <dl class="row details-info">
         <dt class="col-sm-2">
             Title
         </dt>
@@ -66,43 +73,68 @@
         <dd class="col-sm-10">
             @Model.Awards
         </dd>
-        <dt class="col-sm-2">
-            Ratings
-        </dt>
+        <h2>Ratings</h2>
         <dd class="col-sm-10">
-            <ul>
-                @foreach (var rating in Model.Ratings)
+            <ul class="rating-list">
+                @if (Model.Ratings != null)
                 {
-                    <li>
-                        @rating.Source: @rating.Value;
-                    </li>
-                }
-            </ul>
-        </dd>
-        <h2>Streaming options</h2>
-        <dt class="col-sm-2">
-            Streaming Services
-        </dt>
-        <dd class="col-sm-10">
-            <ul>
-                @if (Model.StreamingServices != null)
-                {
-                    @foreach (var stream in Model.StreamingServices)
+                    @foreach (var rating in Model.Ratings)
                     {
                         <li>
-                            @stream.ServiceName.ToUpper(), @stream.Type, @stream.Link, @stream.Price
+                            @{
+                                string imageName = "";
+                                switch (rating.Source)
+                                {
+                                    case "Internet Movie Database":
+                                        imageName = "imdb.png";
+                                        break;
+                                    case "Metacritic":
+                                        imageName = "metacritic.png";
+                                        break;
+                                    case "Rotten Tomatoes":
+                                        imageName = "rotten_tomatoes.png";
+                                        break;
+                                }
+                            }
+                            <img class="rating-img" src="/images/icons/@imageName">
+                            <p class="rating-score">@rating.Value</p>
                         </li>
                     }
                 }
                 else
                 {
-                    <li>No streaming options found</li>
+                    <li>
+                        <p>No ratings found</p>
+                    </li>
+                }
+            </ul>
+        </dd>
+        <h2>Streaming options</h2>
+        <dd class="col-sm-10">
+            <ul class="stream-list">
+                @if (Model.StreamingServices != null)
+                {
+                    @foreach (var stream in Model.StreamingServices)
+                    {
+                        <li>
+                            <a href="@stream.Link"><img class="stream-img" src="/images/icons/@(stream.ServiceName).png"></a>
+                            <p>@CapitalizeFirstLetter(stream.Type)@(stream.Price != null ? "," : "") @stream.Price</p>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li>
+                        <p>No streaming options found</p>
+                    </li>
                 }
 
             </ul>
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="detail-buttons">
+    <input type="button" value="Remove" onclick="location.href='@Url.Action("Remove", "Movie")?movieId=@Model.Id'" />
+    <input type="button" value="Generate Image" onclick="location.href='@Url.Action("ImageAI", "Movie")?movieId=@Model.Id'" />
+    <input type="button" value="Back to menu" onclick="location.href='@Url.Action("Index", "Movie")'" />
 </div>
