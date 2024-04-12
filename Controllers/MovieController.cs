@@ -37,13 +37,8 @@ namespace MovieLibrary.Controllers
                     List<Movie> movieList = JsonConvert.DeserializeObject<List<Movie>>(Convert.ToString(response.Result));
                     return View(movieList);
                 }
-                else 
-                { 
-                    return View();
-                }
-
             }
-            else return View(); 
+            return View(); 
         }
 
         public async Task<IActionResult> Details(Guid movieId)

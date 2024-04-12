@@ -9,7 +9,7 @@
 
 @* <a asp-action="Search">Search</a> *@
 
-@if (user != null)
+@if (user != null && Model != null)
 {
     <button id="toggleGrid"><i class="bi bi-grid-3x3"></i></button>
     <div class="wrapper style2">
@@ -42,11 +42,18 @@
         });
     </script>
 }
-else
+else if (user == null)
 {
     <div class="index">
         <img src="/images/other/nothing.png">
         <h3>Please sign up or log in to view your list of movies :)</h3>
+    </div>
+}
+else
+{
+    <div class="index">
+        <img src="/images/other/nothing.png">
+        <h3>Search for a movie or tv-show to add it to your library!</h3>
     </div>
 }
 

@@ -138,20 +138,12 @@ input, select, textarea {
     
 }
 
-.login, .password-reset, .validate {
+.login, .password-reset, .validate, .register,
+.register-confirm {
     display: flex;
     flex-direction: column;
     margin-top: 100px;
     margin-left: 35vw;
-}
-
-
-.register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 55vh;
-    width: 120vw;
 }
 
 /* Home page*/
@@ -2347,17 +2339,10 @@ ol.default {
 
     /* Settings */
 
-    .login, .password-reset, .validate {
+    .login, .password-reset, .validate, .register,
+    .register-confirm {
         margin: 50px 10% 0 10%;
         text-align: center;
-    }
-
-    .register-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 65vh;
-        width: 75vw;
     }
 
     /* Basic */
