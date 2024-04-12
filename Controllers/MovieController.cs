@@ -143,13 +143,16 @@ namespace MovieLibrary.Controllers
             movieDto.Id = Guid.NewGuid();
             movieDto.Fk_UserId = user.Id;
 
-            var ratings = _mapper.Map<List<RatingCreateDTO>>(viewModel.Ratings);
-            foreach (var rating in ratings)
+            if (viewModel.Ratings !=  null)
             {
-                rating.Id = Guid.NewGuid();
-                rating.Fk_MovieId = movieDto.Id;
+                var ratings = _mapper.Map<List<RatingCreateDTO>>(viewModel.Ratings);
+                foreach (var rating in ratings)
+                {
+                    rating.Id = Guid.NewGuid();
+                    rating.Fk_MovieId = movieDto.Id;
+                }
+                movieDto.Ratings = ratings;
             }
-            movieDto.Ratings = ratings;
 
             if (viewModel.StreamingServices != null)
             {
