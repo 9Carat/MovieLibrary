@@ -42,37 +42,11 @@
         });
     </script>
 }
-
-
-
-
-@* <div class="col-md-3">
-    <div class="card mb-4 shadow-sm">
-        <a asp-action="Details" asp-route-movieId="@movie.Id">
-            <img src="@movie.Poster" class="card-img-top" alt="@movie.Title">
-        </a>
-        <div class="card-body">
-            <h5 class="card-title">@movie.Title</h5>
-        </div>
+else
+{
+    <div class="index">
+        <img src="/images/other/nothing.png">
+        <h3>Please sign up or log in to view your list of movies :)</h3>
     </div>
-</div> *@
+}
 
-
-
-
-
-
-
-
-
-
-@*                     foreach (var movie in Model)
-                    {
-<div class="card mx-2 my-1" style="width: 15rem">
-    <h2>@movie.Title</h2>
-    <img src="@movie.Poster" />
-    <div class="footer text-center text-body-secondary">
-        <a asp-action="Details" asp-route-movieId="@movie.Id" data-bs-toggle="tooltip" data-bs-title="Show details"><i class="bi bi-arrow-right" style="font-size: 20px; color: cornflowerblue; padding-right:10px;">Details</i></a>
-    </div>
-</div> 
-                    }*@

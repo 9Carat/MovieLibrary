@@ -15,8 +15,6 @@
     }
 }
 
-<h1>Details</h1>
-
 <div class="details-main">
     <hr />
     <img src="@Model.Poster" class="details-img" />
@@ -128,7 +126,7 @@
     </dl>
 </div>
 <div class="detail-buttons">
-    <input type="button" value="Back to list" onclick="location.href='@Url.Action("Index", "Movie")'" />
     <input type="button" value="Remove" onclick="location.href='@Url.Action("Remove", "Movie")?movieId=@Model.Id'" />
     <input type="button" value="Generate Image" onclick="location.href='@Url.Action("ImageAI", "Movie")?movieId=@Model.Id'" />
+    <input type="button" value="Back to menu" onclick="location.href='@Url.Action("Index", "Movie")'" />
 </div>

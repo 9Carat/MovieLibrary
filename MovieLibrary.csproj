@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\other\" />
     <Folder Include="wwwroot\images\posters\" />
   </ItemGroup>
 

@@ -5,15 +5,26 @@
 @{
     ViewData["Title"] = "SearchResult";
     var user = await userManager.GetUserAsync(User);
+
+    string CapitalizeFirstLetter(string str)
+    {
+        if (str == null)
+            return null;
+
+        if (str.Length > 1)
+            return char.ToUpper(str[0]) + str.Substring(1);
+
+        return str.ToUpper();
+    }
 }
 
 
 <div>
-    <form asp-action="SaveMovie" method="post">
+    <form class="details-main" asp-action="SaveMovie" method="post">
         @* Validation check *@
         <input type="hidden" asp-for="Movie.Poster" />
-        <img src="@Model.Movie.Poster" />
-        <dl class="row">
+        <img class="details-img" src="@Model.Movie.Poster" />
+        <dl class="row details-info">
             <dt class="col-sm-2">
                 Title
             </dt>
@@ -77,59 +88,74 @@
                 <input type="hidden" asp-for="Movie.Awards" />
                 @Model.Movie.Awards
             </dd>
-            <dt class="col-sm-2">
-                Ratings
-            </dt>
+            <h2>Ratings</h2>
             <dd class="col-sm-10">
-                <ul>
+                <ul class="rating-list">
                     @for (int i = 0; i < Model.Ratings.Count; i++)
                     {
                         <li>
-                            <input type="hidden" asp-for="Ratings[i].Source"/>
-                            <input type="hidden" asp-for="Ratings[i].Value"/>
-                            @Model.Ratings[i].Source: @Model.Ratings[i].Value
+                            @{
+                                string imageName = "";
+                                switch (Model.Ratings[i].Source)
+                                {
+                                    case "Internet Movie Database":
+                                        imageName = "imdb.png";
+                                        break;
+                                    case "Metacritic":
+                                        imageName = "metacritic.png";
+                                        break;
+                                    case "Rotten Tomatoes":
+                                        imageName = "rotten_tomatoes.png";
+                                        break;
+                                }
+                            }
+                            <img class="rating-img" src="/images/icons/@imageName">
+                            <p class="rating-score">@Model.Ratings[i].Value</p>
+                            <input type="hidden" asp-for="Ratings[i].Source" />
+                            <input type="hidden" asp-for="Ratings[i].Value" />
                         </li>
                     }
                 </ul>
             </dd>
             <h2>Streaming options</h2>
-            <dt class="col-sm-2">
-                Streaming Services
-            </dt>
             <dd class="col-sm-10">
-                <ul>
-                    @if(Model.StreamingServices != null)
+                <ul class="stream-list">
+                    @if (Model.StreamingServices != null)
                     {
                         @for (int i = 0; i < Model.StreamingServices.Count; i++)
                         {
                             <li>
-                                <input type="hidden" asp-for="StreamingServices[i].ServiceName" />
-                                <input type="hidden" asp-for="StreamingServices[i].Type" />
-                                <input type="hidden" asp-for="StreamingServices[i].Link" />
-                                <input type="hidden" asp-for="StreamingServices[i].Price" />
-                                @Model.StreamingServices[i].ServiceName.ToUpper(), @Model.StreamingServices[i].Type, @Model.StreamingServices[i].Link, @Model.StreamingServices[i].Price
+                                <a href="@Model.StreamingServices[i].Link">
+                                    <img class="stream-img" src="/images/icons/@(Model.StreamingServices[i].ServiceName).png">
+                                </a>
+                                <p>@CapitalizeFirstLetter(Model.StreamingServices[i].Type)@(Model.StreamingServices[i].Price != null ? "," : "") @Model.StreamingServices[i].Price</p>
                             </li>
+                            <input type="hidden" asp-for="StreamingServices[i].ServiceName" />
+                            <input type="hidden" asp-for="StreamingServices[i].Type" />
+                            <input type="hidden" asp-for="StreamingServices[i].Link" />
+                            <input type="hidden" asp-for="StreamingServices[i].Price" />
                         }
                     }
-                    else {
+                    else
+                    {
                         <li>No streaming options found</li>
                     }
-                    
+
                 </ul>
             </dd>
         </dl>
         @if (user != null)
         {
-            <div class="form-group">
+            <div class="form-group detail-buttons">
                 <input type="submit" value="Add to list" class="btn btn-primary" />
+                <input type="button" value="Back to menu" onclick="location.href='@Url.Action("Index", "Movie")'" />
             </div>
         }
         else
         {
         <div class="form-group">
-            <button type="button" disabled class="btn btn-primary">Login to add movie</button>
+              <input type="button" class="nav-link" onclick="window.location.href='@Url.Page("/Account/Login", new { area = "Identity" })'" value="Login to add movie" />
         </div>
         }
     </form>
-    <a asp-action="Index">Back to menu</a>
 </div>
