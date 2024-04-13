@@ -98,24 +98,28 @@
                             <li>
                                 @{
                                     string imageName = "";
+                                    string link = "";
                                     switch (Model.Ratings[i].Source)
                                     {
                                         case "Internet Movie Database":
                                             imageName = "imdb.png";
+                                            link = "https://www.imdb.com/search/title/?title=" + Model.Movie.Title;
                                             break;
                                         case "Metacritic":
                                             imageName = "metacritic.png";
+                                            link = "https://www.metacritic.com/movie/" + Model.Movie.Title.Replace(' ', '-').Replace(":", "").Replace(".", "").Replace("(", "").Replace(")", "").ToLower();
                                             break;
                                         case "Rotten Tomatoes":
                                             imageName = "rotten_tomatoes.png";
+                                            link = "https://www.rottentomatoes.com/m/" + @Model.Movie.Title.Replace(' ', '_').Replace(":", "").Replace("-", "").Replace("__", "_").ToLower();
                                             break;
                                     }
                                 }
-                                <img class="rating-img" src="/images/icons/@imageName">
+                                <a href="@link"><img class="rating-img" src="/images/icons/@imageName"></a> <!-- Link works as long as title isn't super complicated-->
                                 <p class="rating-score">@Model.Ratings[i].Value</p>
-                                <input type="hidden" asp-for="Ratings[i].Source" />
-                                <input type="hidden" asp-for="Ratings[i].Value" />
                             </li>
+                            <input type="hidden" asp-for="Ratings[i].Source" />
+                            <input type="hidden" asp-for="Ratings[i].Value" />
                         }
                     }
                     else
