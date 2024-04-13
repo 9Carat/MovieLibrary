@@ -19,11 +19,13 @@ namespace MovieLibrary.Controllers
         private readonly UserManager<IdentityUser> _user;
         private readonly IMovieService _movieService;
         private readonly IMapper _mapper;
-        public MovieController(UserManager<IdentityUser> user, IMovieService movieService, IMapper mapper)
+        IWebHostEnvironment _hostingEnvironment;
+        public MovieController(UserManager<IdentityUser> user, IMovieService movieService, IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _user = user;
             _movieService = movieService;
             _mapper = mapper;
+            _hostingEnvironment = hostingEnvironment;
         }
         public async Task<IActionResult> Index()
         {
@@ -65,16 +67,24 @@ namespace MovieLibrary.Controllers
                 var edenResponse = JsonConvert.DeserializeObject<dynamic>(edenResult);
                 string imgUrl = edenResponse[0].items[0].image_resource_url;
 
-                // Download image
+                // Download image from Eden API response
                 byte[] imageBytes;
                 using (var httpClient = new HttpClient())
                 {
                     imageBytes = await httpClient.GetByteArrayAsync(imgUrl);
                 }
 
-                // Store image locally
+                // Store the image locally
                 string fileName = $"{movieId.ToString() + DateTime.Now.ToString("yymmssfff")}.jpg";
-                string imagePath = Path.Combine("wwwroot", "images", "posters", fileName);
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "posters");
+
+                // Check if the directory exists, if not create it
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string imagePath = Path.Combine(uploadsFolder, fileName);
                 using (var fileStream = new FileStream(imagePath, FileMode.Create))
                 {
                     await fileStream.WriteAsync(imageBytes);
