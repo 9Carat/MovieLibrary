@@ -3,7 +3,7 @@
 @inject UserManager<IdentityUser> userManager
 
 @{
-    ViewData["Title"] = "SearchResult";
+    ViewData["Title"] = "Search - ";
     var user = await userManager.GetUserAsync(User);
 
     string CapitalizeFirstLetter(string str)

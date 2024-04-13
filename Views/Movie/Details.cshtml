@@ -1,7 +1,7 @@
 ﻿@model Movie
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details - ";
 
     string CapitalizeFirstLetter(string str)
     {
@@ -83,20 +83,24 @@
                         <li>
                             @{
                                 string imageName = "";
+                                string link = "";
                                 switch (rating.Source)
                                 {
                                     case "Internet Movie Database":
                                         imageName = "imdb.png";
+                                        link = "https://www.imdb.com/search/title/?title=" + Model.Title;
                                         break;
                                     case "Metacritic":
                                         imageName = "metacritic.png";
+                                        link = "https://www.metacritic.com/movie/" + @Model.Title.Replace(' ', '-').Replace(":", "").Replace(".", "").Replace("(", "").Replace(")", "").ToLower();
                                         break;
                                     case "Rotten Tomatoes":
                                         imageName = "rotten_tomatoes.png";
+                                        link = "https://www.rottentomatoes.com/m/" + @Model.Title.Replace(' ', '_').Replace(":", "").Replace("-", "").Replace("__", "_").ToLower();
                                         break;
                                 }
                             }
-                            <img class="rating-img" src="/images/icons/@imageName">
+                            <a href="@link"><img class="rating-img" src="/images/icons/@imageName"></a> <!-- Link works as long as title isn't super complicated-->
                             <p class="rating-score">@rating.Value</p>
                         </li>
                     }

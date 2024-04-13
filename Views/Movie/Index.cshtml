@@ -3,7 +3,7 @@
 @inject UserManager<IdentityUser> userManager
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "";
     var user = await userManager.GetUserAsync(User);
 }
 
@@ -46,7 +46,7 @@ else if (user == null)
 {
     <div class="index">
         <img src="/images/other/nothing.png">
-        <h3>Please sign up or log in to view your list of movies :)</h3>
+        <h3>Sign up or log in to view your list of movies :)</h3>
     </div>
 }
 else

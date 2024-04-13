@@ -88,13 +88,6 @@ namespace MovieLibrary.Controllers
             else return View("Error");
         }
 
-
-        public IActionResult Search()
-        {
-            var movie = new Movie();
-            return View(movie);
-        }
-
         public async Task<IActionResult> SearchResult(string title)
         {
 

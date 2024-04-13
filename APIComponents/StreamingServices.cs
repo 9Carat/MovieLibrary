@@ -23,7 +23,7 @@ namespace MovieLibrary.APIComponents
 
                     foreach (var service in streamOptions)
                     {
-                        // Create StreamingService object based on custom respone object
+                        // Create StreamingService object based on the custom response object
                         var streamingService = new StreamingService
                         {
                             Id = Guid.NewGuid(),
