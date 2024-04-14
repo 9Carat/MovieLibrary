@@ -2064,6 +2064,14 @@ ol.default {
         font-size: 10px;
     }
 
+    .search-buttons, input {
+        max-width: 100%;
+    }
+
+    .search-buttons {
+        width: 100%;
+    }
+
     .stream-img {
         width: 25%;
         max-height: 125px
