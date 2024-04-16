@@ -11,6 +11,9 @@ using MovieLibrary.Models.DTO;
 using MovieLibrary.Services.IServices;
 using Newtonsoft.Json;
 using System.Security.Principal;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace MovieLibrary.Controllers
 {
@@ -74,25 +77,33 @@ namespace MovieLibrary.Controllers
                     imageBytes = await httpClient.GetByteArrayAsync(imgUrl);
                 }
 
-                // Store the image locally
-                string fileName = $"{movieId.ToString() + DateTime.Now.ToString("yymmssfff")}.jpg";
-                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "posters");
-
-                // Check if the directory exists, if not create it
-                if (!Directory.Exists(uploadsFolder))
+                // Resize image to match other posters
+                using (var image = Image.Load(imageBytes))
                 {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                    image.Mutate(x => x
+                        .Resize(300, 444));
 
-                string imagePath = Path.Combine(uploadsFolder, fileName);
-                using (var fileStream = new FileStream(imagePath, FileMode.Create))
-                {
-                    await fileStream.WriteAsync(imageBytes);
-                }
+                    // Store the resized image locally
+                    string fileName = $"{movieId.ToString() + DateTime.Now.ToString("yymmssfff")}.jpg";
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "posters");
 
-                movie.Poster = $"/images/posters/{fileName}";
-                var movieDto = _mapper.Map<MovieUpdateDTO>(movie);
-                await _movieService.UpdateAsync<ApiResponse>(movieDto);
+                    // Check if the directory exists, if not create it
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    // Save the image
+                    string imagePath = Path.Combine(uploadsFolder, fileName);
+                    using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        image.Save(fileStream, new JpegEncoder());
+                    }
+
+                    movie.Poster = $"/images/posters/{fileName}";
+                    var movieDto = _mapper.Map<MovieUpdateDTO>(movie);
+                    await _movieService.UpdateAsync<ApiResponse>(movieDto);
+                }
                 return View("Details", movie);
             }
             else return View("Error");
