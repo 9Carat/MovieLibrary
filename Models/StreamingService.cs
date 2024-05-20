@@ -13,7 +13,7 @@ namespace MovieLibrary.Models
         public string Type { get; set; }
         public string Link { get; set; }
         [StringLength(25)]
-        public string Price { get; set; }
+        public string? Price { get; set; }
         [ForeignKey("Movie")]
         public Guid Fk_MovieId { get; set; }
         public virtual Movie Movie { get; set; }

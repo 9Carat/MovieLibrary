@@ -5,6 +5,8 @@ using MovieLibrary.Data;
 using MovieLibrary.Services;
 using MovieLibrary.Services.IServices;
 using WovieLibrary.Services;
+using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
 
 namespace MovieLibrary
 {
@@ -29,6 +31,12 @@ namespace MovieLibrary
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
+            builder.Services.AddSingleton(new YouTubeService(new BaseClientService.Initializer()
+            {
+                ApiKey = "AIzaSyDaUEKEiZKOIo-i36f1qOyF6TykhZ4o2WU",
+                ApplicationName = "MovieLibrary"
+            }));
 
             var app = builder.Build();
 

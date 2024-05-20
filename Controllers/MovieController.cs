@@ -19,58 +19,46 @@ namespace MovieLibrary.Controllers
 {
     public class MovieController : Controller
     {
+        private readonly ApplicationDbContext _db;
         private readonly UserManager<IdentityUser> _user;
-        private readonly IMovieService _movieService;
-        private readonly IMapper _mapper;
-        IWebHostEnvironment _hostingEnvironment;
-        public MovieController(UserManager<IdentityUser> user, IMovieService movieService, IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public MovieController(ApplicationDbContext db, UserManager<IdentityUser> user, IWebHostEnvironment hostingEnvironment)
         {
+            _db = db;
             _user = user;
-            _movieService = movieService;
-            _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
         }
         public async Task<IActionResult> Index()
         {
             var user = await _user.GetUserAsync(User);
-            
             if (user != null)
             {
-                var response = await _movieService.GetByUserIdAsync<ApiResponse>(user.Id);
-                if (response.IsSuccess)
-                {
-                    List<Movie> movieList = JsonConvert.DeserializeObject<List<Movie>>(Convert.ToString(response.Result));
-                    return View(movieList);
-                }
+                IQueryable<Movie> movies = _db.Movies.Where(m => m.Fk_UserId == user.Id).Include(m => m.Ratings).Include(m => m.StreamingServices);
+                List<Movie> movieList = await movies.ToListAsync();
+                return View(movieList);
             }
-            return View(); 
+            else return View();
         }
 
-        public async Task<IActionResult> Details(Guid movieId)
+        public IActionResult Details(Guid MovieId)
         {
-            var response = await _movieService.GetByMovieIdAsync<ApiResponse>(movieId);
-            if (response.IsSuccess)
-            {
-                var movie = JsonConvert.DeserializeObject<Movie>(Convert.ToString(response.Result));
-                return View(movie);
-            }
-            else return View("Error");
+            var movie = _db.Movies.Where(m => m.Id == MovieId).Include(m => m.Ratings).Include(m => m.StreamingServices).FirstOrDefault();
+            return View(movie);
         }
 
         public async Task<IActionResult> ImageAI(Guid movieId)
         {
-            var response = await _movieService.GetByMovieIdAsync<ApiResponse>(movieId);
-            var movie = JsonConvert.DeserializeObject<Movie>(Convert.ToString(response.Result));
+            var movie = _db.Movies.Where(m => m.Id == movieId).Include(m => m.Ratings).Include(m => m.StreamingServices).FirstOrDefault();
 
-            if (movie != null && response.IsSuccess)
+            if (movie != null)
             {
                 string title = movie.Title;
-                var edenAI = new EdenAI();
-                var edenResult = await edenAI.Get(title);
-                var edenResponse = JsonConvert.DeserializeObject<dynamic>(edenResult);
-                string imgUrl = edenResponse[0].items[0].image_resource_url;
+                var EdenResponse = new EdenAI();
+                var EdenResult = await EdenResponse.Get(title);
+                var response = JsonConvert.DeserializeObject<dynamic>(EdenResult);
+                string imgUrl = response[0].items[0].image_resource_url;
 
-                // Download image from Eden API response
+                // Download image
                 byte[] imageBytes;
                 using (var httpClient = new HttpClient())
                 {
@@ -101,10 +89,10 @@ namespace MovieLibrary.Controllers
                     }
 
                     movie.Poster = $"/images/posters/{fileName}";
-                    var movieDto = _mapper.Map<MovieUpdateDTO>(movie);
-                    await _movieService.UpdateAsync<ApiResponse>(movieDto);
+                    _db.Movies.Update(movie);
+                    _db.SaveChanges();
+                    return View("Details", movie);
                 }
-                return View("Details", movie);
             }
             else return View("Error");
         }
@@ -132,8 +120,6 @@ namespace MovieLibrary.Controllers
             }
             else return View("Error");
 
-            var viewModel = new MovieViewModel() { Movie = movieData, Ratings = ratingData};
-
             // Call Streaming Availability API
             var streamingResponse = new StreamingAPI();
             var streamingResult = await streamingResponse.Get(title);
@@ -144,51 +130,45 @@ namespace MovieLibrary.Controllers
                 var streamingService = StreamingServices.DeserializeJSON(streamingResult);
 
                 List<StreamingService> streamingData = streamingService;
-                viewModel.StreamingServices = streamingData;
+                var viewModel = new MovieViewModel()
+                {
+                    Movie = movieData,
+                    Ratings = ratingData,
+                    StreamingServices = streamingData
+                };
+
+                return View(viewModel);
             }
-            return View(viewModel);
+            else return RedirectToAction("Index");
         }
-
-
         public async Task<IActionResult> SaveMovie(MovieViewModel viewModel)
         {
+            viewModel.Movie.Id = new Guid();
             var user = await _user.GetUserAsync(User);
-            MovieCreateDTO movieDto = _mapper.Map<MovieCreateDTO>(viewModel.Movie);
-            movieDto.Id = Guid.NewGuid();
-            movieDto.Fk_UserId = user.Id;
-
-            if (viewModel.Ratings !=  null)
+            viewModel.Movie.Fk_UserId = user.Id;
+            _db.Movies.Add(viewModel.Movie);
+            foreach (var rating in viewModel.Ratings)
             {
-                var ratings = _mapper.Map<List<RatingCreateDTO>>(viewModel.Ratings);
-                foreach (var rating in ratings)
-                {
-                    rating.Id = Guid.NewGuid();
-                    rating.Fk_MovieId = movieDto.Id;
-                }
-                movieDto.Ratings = ratings;
+                rating.Fk_MovieId = viewModel.Movie.Id;
+                _db.Ratings.Add(rating);
             }
-
             if (viewModel.StreamingServices != null)
             {
-                var streamingServices = _mapper.Map<List<StreamingServiceCreateDTO>>(viewModel.StreamingServices);
-
-                foreach (var streamingService in streamingServices)
+                foreach (var streamingService in viewModel.StreamingServices)
                 {
-                    streamingService.Id = Guid.NewGuid();
-                    streamingService.Fk_MovieId = movieDto.Id;
+                    streamingService.Fk_MovieId = viewModel.Movie.Id;
+                    _db.StreamingServices.Add(streamingService);
                 }
-
-                movieDto.StreamingServices = streamingServices;
             }
 
-            await _movieService.CreateMovieAsync<ApiResponse>(movieDto);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
-
-
-        public async Task<IActionResult> Remove(Guid movieId)
+        public IActionResult Remove(Guid movieId)
         {
-            await _movieService.DeleteAsync<ApiResponse>(movieId);
+            var movie = _db.Movies.Where(m => m.Id == movieId).Include(m => m.Ratings).Include(m => m.StreamingServices).FirstOrDefault();
+            _db.Movies.Remove(movie);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }
